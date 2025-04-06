@@ -1,67 +1,126 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🌿 Living Healthy Natural
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dự án quản trị sản phẩm thiên nhiên hỗ trợ người dùng sống khỏe mạnh. Xây dựng bằng **Laravel 12**, sử dụng **Filament Admin Panel** cho quản lý backend.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Công nghệ sử dụng
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.2+
+- Laravel 12
+- Filament v3+
+- Livewire
+- Tailwind CSS
+- Alpine.js
+- Laravel Breeze (đăng nhập / đăng ký)
+- MySQL / MariaDB
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📦 Cài đặt
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Clone project
+```bash
+git clone https://github.com/tenban/Living_Healthy_Natural.git
+cd Living_Healthy_Natural
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 2. Cài đặt package
+```bash
+composer install
+npm install && npm run build
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. Thiết lập `.env`
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Laravel Sponsors
+Cấu hình `.env`:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```env
+DB_DATABASE=your_db_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-### Premium Partners
+### 4. Chạy migration và seed
+```bash
+php artisan migrate --seed
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 🛡️ Xác thực & Quản trị
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Cài Laravel Breeze (nếu chưa)
+```bash
+php artisan breeze:install livewire
+npm install && npm run build
+php artisan migrate
+```
 
-## Code of Conduct
+### Cài Filament
+```bash
+composer require filament/filament
+php artisan filament:install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Tạo user quản trị:
+```bash
+php artisan make:filament-user
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🖥️ Truy cập
 
-## License
+- Trang người dùng: `http://localhost:8000`
+- Admin panel: `http://localhost:8000/admin`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-"#Living_Healthy_Natural" 
+---
+
+## 📁 Cấu trúc thư mục chính
+
+```
+app/
+├── Filament/            # Tùy chỉnh layout, pages, resources của filament
+├── Http/
+│   ├── Controllers/
+│   ├── Livewire/
+├── Models/
+resources/
+├── views/
+routes/
+├── web.php
+├── filament.php
+```
+
+---
+
+## ✅ Tính năng hiện có
+
+- [x] Đăng nhập / Đăng ký người dùng
+- [x] Quản lý sản phẩm (tên, mô tả, hình ảnh)
+- [x] Giao diện quản trị Filament
+- [x] Phân quyền user (admin / user)
+- [ ] Trang blog & bài viết (đang phát triển)
+- [ ] Đặt hàng trực tuyến (sắp tới)
+
+---
+
+## 💡 Gợi ý phát triển tiếp
+
+- Tích hợp thanh toán (VNPay, Momo)
+- Thêm tính năng đa ngôn ngữ (Laravel Localization)
+- Sử dụng Laravel Scout cho tìm kiếm nhanh
+- Tích hợp thống kê doanh thu với Filament Charts
+
+---
+
+## 📚 Tài liệu tham khảo
+
+- [Laravel Docs](https://laravel.com/docs)
+- [Filament Docs](https://filamentphp.com/docs/3.x/panels/installation)
+- [Tailwind CSS](https://tailwindcss.com/)
