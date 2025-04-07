@@ -9,10 +9,11 @@ return new class extends Migration {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->string('slug')->unique(); // Thêm slug
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Liên kết danh mục
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('image_url')->nullable();
             $table->timestamps();
         });
