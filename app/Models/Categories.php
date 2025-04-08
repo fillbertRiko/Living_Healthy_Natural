@@ -10,7 +10,7 @@ class Categories extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name','slug', 'description','active', 'image'];
 
     // Một danh mục có nhiều sản phẩm
     public function products()

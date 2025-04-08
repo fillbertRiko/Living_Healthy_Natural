@@ -48,13 +48,18 @@ class CategoriesResource extends Resource
                                     ->dehydrated()
                                     ->unique(Categories::class, 'slug', ignoreRecord: true)
                                     ->disabled(),
+
+                                TextInput::make('description')
+                                    ->label('Thông tin chi tiết danh mục')
+                                    ->required()
+                                    ->maxlength(255)
                             ]),
                         FileUpload::make('image')
                             ->label('Hình Ảnh Sản Phẩm')
                             ->image()
                             ->directory('categories'),
 
-                        Toggle::make('is_active')
+                        Toggle::make('active')
                             ->label('Sản phẩm đang bán')
                             ->required()
                             ->default(true),
@@ -67,20 +72,29 @@ class CategoriesResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Tên danh mục')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\IconColumn::make('is_active')
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Thông tin chi tiết danh mục')
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Hình ảnh'),
+                Tables\Columns\IconColumn::make('active')
+                    ->label('Hoạt động')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Tạo lúc')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Chỉnh sửa gần nhất')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                     
             ])
             ->filters([
