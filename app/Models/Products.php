@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Product extends Model
+class Products extends Model
 {
     use HasFactory;
 
@@ -40,6 +40,11 @@ class Product extends Model
     public function warehouses()
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_stocks');
+    }
+
+    public function categories()
+    {
+        return $this->belongsTo(Categories::class);
     }
 
     public static function boot()
