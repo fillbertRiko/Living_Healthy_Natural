@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\WarehousesResource\Pages;
-use App\Filament\Resources\WarehousesResource\RelationManagers;
-use App\Models\Warehouses;
+use App\Filament\Resources\WarehouseResource\Pages;
+use App\Filament\Resources\WarehouseResource\RelationManagers;
+use App\Models\Warehouse;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class WarehousesResource extends Resource
+class WarehouseResource extends Resource
 {
     protected static ?string $model = Warehouse::class;
 
@@ -57,8 +57,8 @@ class WarehousesResource extends Resource
     {
         return [
             'index' => Pages\ListWarehouses::route('/'),
-            'create' => Pages\CreateWarehouses::route('/create'),
-            'edit' => Pages\EditWarehouses::route('/{record}/edit'),
+            'create' => Pages\CreateWarehouse::route('/create'),
+            'edit' => Pages\EditWarehouse::route('/{record}/edit'),
         ];
     }
 }

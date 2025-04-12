@@ -21,6 +21,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\DateTimePicker; 
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Group;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
 
 class ProductsResource extends Resource
@@ -88,24 +89,25 @@ class ProductsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Tên sản phẩm')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Thông tin chi tiết sản phẩm')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image')
-                    ->label('Hình ảnh'),
-                Tables\Columns\TextColumn::make('price')
-                    ->label('Giá thành'),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->label('Số lượng'),
-                Tables\Columns\TextColumn::make('created_at')
+
+                TextColumn::make('slug')
+                    ->label('Tên danh mục')
+                    ->sortable(),
+
+                TextColumn::make('price')
+                    ->money('VND')
+                    ->sortable(),
+
+                TextColumn::make('created_at')
                     ->label('Tạo lúc')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('updated_at')
+                
+                TextColumn::make('updated_at')
                     ->label('Chỉnh sửa gần nhất')
                     ->dateTime()
                     ->sortable()
