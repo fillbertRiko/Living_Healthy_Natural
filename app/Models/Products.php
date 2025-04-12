@@ -51,13 +51,11 @@ class Products extends Model
     {
         parent::boot();
 
-        static::creating(function ($model)
-        {
-            $model->slug = Str::slug($model->name);
-        });
-        static::updating(function ($model)
-        {
-            $model->slug = Str::slug($model->name);
+        static::creating(function ($product) {
+            if(!$product->slug)
+            {
+                $product->slug = Categories::find($product->category_id)?->slug ?? '';
+            }
         });
     }
 }

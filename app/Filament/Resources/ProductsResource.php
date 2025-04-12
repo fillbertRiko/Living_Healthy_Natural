@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\DateTimePicker; 
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Group;
 use Illuminate\Support\Str;
 
 class ProductsResource extends Resource
@@ -29,48 +33,93 @@ class ProductsResource extends Resource
     {
         return $form
             ->schema([
-                Section::make()
-                    ->schema([
-                        Grid::make()
-                            ->schema([
-                                TextInput::make('name')
-                                    ->label('Tên sản phẩm')
-                                    ->required()
-                                    ->maxLength(500)
-                                    ->live(),
+                Group::make()->schema([
+                    Section::make('Thông tin sản phẩm')->schema([
+                        TextInput::make('name')
+                            ->label('Tên sản phẩm')
+                            ->required()
+                            ->maxLength(255),
 
-                                Select::make('category_id')
-                                    ->label('Danh mục sản phẩm')
-                                    ->relationship('categories', 'name')
-                                    ->required()
-                                    ->searchable(),
+                        Select::make('category_id')
+                            ->label('Danh mục')
+                            ->required()
+                            ->searchable()
+                            ->relationship('categories', 'name')
+                            ->preload()
+                            ->afterStateUpdated(fn ($state, $set) =>$set('slug', 
+                                Categories::find($state)?->slug ?? '')),
 
-                                TextInput::make('description')
-                                    ->label('Thông tin sản phẩm'),
+                        MarkdownEditor::make('description')
+                            ->label('Thông tin về sản phẩm')
+                            ->columnSpanFull()
+                            ->fileAttachmentsDirectory('products')
+                        ])->columns(2),
 
-                                TextInput::make('slug')
-                                    ->label('Slug')
-                                    ->maxLength(255)
-                                    ->dehydrated()
-                                    ->unique(Products::class, 'slug', ignoreRecord: true)
-                                    ->disabled()
-                                    ->default(fn ($state, $get) => Str::slug($get('slug'))),
-                            ]),
+                    Section::make('Hình ảnh sản phẩm')->schema([
+                        FileUpload::make('image')
+                            ->image()
+                            ->directory('products'),
+                                 
+                        ]),
+                ])->columnSpan(2),
+
+                Group::make()->schema([
+                    Section::make('Giá tiền')->schema([
+                        TextInput::make('price')
+                            ->label('Giá')
+                            ->numeric()
+                            ->required()
+                            ->prefix('VND'),
+
+                        TextInput::make('quantity')
+                            ->label('Số lượng')
+                            ->numeric()
+                            ->required()
+                            ->prefix('Thùng'),
                     ]),
-            ]);
+
+                    Section::make('Trạng thái sản phẩm')->schema([
+                    ]),
+                ])->columnSpan(1),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Tên sản phẩm')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Thông tin chi tiết sản phẩm')
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Hình ảnh'),
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Giá thành'),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('Số lượng'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Tạo lúc')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Chỉnh sửa gần nhất')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
