@@ -20,6 +20,6 @@ class OrderItem extends Model
     // Một sản phẩm trong đơn hàng liên kết với một sản phẩm cụ thể
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Products::class);
     }
 }

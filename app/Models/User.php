@@ -5,10 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Logs;
+use App\Models\Order;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -59,7 +66,7 @@ class User extends Authenticatable
             }
 
             // Ngăn chặn tạo admin nếu không phải Super Admin
-            if ($user->role === 'admin' && auth()->user()?->role !== 'super_admin') {
+            if ($user->role === 'admin' && Auth::user()?->role !== 'super_admin') {
                 throw new \Exception('Chỉ Super Admin mới có quyền tạo Admin.');
             }
         });
@@ -74,7 +81,7 @@ class User extends Authenticatable
         // Ghi log khi tạo tài khoản
         static::created(function ($user) {
             Logs::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::user()?->id,
                 'action'  => "Tạo tài khoản: {$user->name} ({$user->role})",
             ]);
         });
@@ -82,7 +89,7 @@ class User extends Authenticatable
         // Ghi log khi cập nhật tài khoản
         static::updated(function ($user) {
             Logs::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::user()?->id,
                 'action'  => "Chỉnh sửa tài khoản: {$user->name} ({$user->role})",
             ]);
         });
@@ -90,7 +97,7 @@ class User extends Authenticatable
         // Ghi log khi xóa tài khoản
         static::deleted(function ($user) {
             Logs::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::user()?->id,
                 'action'  => "Xóa tài khoản: {$user->name} ({$user->role})",
             ]);
         });

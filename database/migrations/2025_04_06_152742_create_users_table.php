@@ -12,9 +12,13 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['super_admin', 'admin', 'user'])->default('user'); // Giới hạn quyền
+            $table->enum('role', ['super_admin', 'admin', 'user'])->default('user');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('avatar')->nullable();
         });
     }
 

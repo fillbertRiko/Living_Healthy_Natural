@@ -19,6 +19,11 @@ return new class extends Migration
             $table->enum('payment_method', ['credit_card', 'paypal', 'bank_transfer', 'cash'])->default('cash');
             $table->enum('status', ['pending', 'completed', 'failed', 'refunded'])->default('pending');
             $table->timestamps();
+            $table->softDeletes(); // Thêm trường deleted_at để hỗ trợ Soft Deletes
+            // Thêm các trường cho việc quản lý thanh toán
+            $table->string('transaction_id')->nullable(); // ID giao dịch từ cổng thanh toán
+            $table->string('currency')->default('USD'); // Tiền tệ thanh toán
+            $table->string('payment_gateway')->nullable(); // Cổng thanh toán (Stripe, PayPal, etc.)        
         });
     }
 

@@ -14,14 +14,31 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->string('image')->nullable(); // Thêm ảnh sản phẩm
+            $table->string('image')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
-            // Thêm 4 cột trạng thái dạng true/false
-            $table->boolean('is_active')->default(true);   // Sản phẩm có hoạt động không?
-            $table->boolean('is_featured')->default(false); // Sản phẩm nổi bật?
-            $table->boolean('is_on_sale')->default(false); // Sản phẩm đang giảm giá?
-            $table->boolean('is_new')->default(false); // Sản phẩm mới ra mắt?
+            // Các trường bổ sung
+            $table->string('sku')->nullable();
+            $table->string('barcode')->nullable();
+            $table->string('brand')->nullable();
+            $table->string('model')->nullable();
+            $table->string('color')->nullable();
+            $table->string('size')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('dimensions')->nullable();
+            $table->string('material')->nullable();
+            $table->string('warranty')->nullable();
+            $table->string('origin')->nullable();
+            $table->string('tags')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
+
+            // Trạng thái
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
+            $table->boolean('is_on_sale')->default(false);
+            $table->boolean('is_new')->default(false);
         });
     }
 

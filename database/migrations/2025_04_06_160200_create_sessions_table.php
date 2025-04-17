@@ -18,6 +18,12 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+            $table->timestamps();
+            $table->softDeletes(); // Thêm trường deleted_at để hỗ trợ Soft Deletes
+            // Thêm các trường cho việc quản lý phiên làm việc
+            $table->string('device')->nullable(); // Thiết bị
+            $table->string('browser')->nullable(); // Trình duyệt
+            $table->string('platform')->nullable(); // Nền tảng 
         });
     }
 

@@ -4,18 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\Categories; // Ensure the Category model exists in this namespace, or update the namespace accordingly.
 
 class Products extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = ['name', 'slug', 'description', 'price', 'quantity', 'category_id', 'image'];
 
     // Một sản phẩm thuộc về một danh mục
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Categories::class);
     }
 
     // Một sản phẩm có nhiều đánh giá

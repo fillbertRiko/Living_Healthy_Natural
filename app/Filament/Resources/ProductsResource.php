@@ -21,8 +21,11 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\DateTimePicker; 
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Group;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class ProductsResource extends Resource
 {
@@ -114,7 +117,8 @@ class ProductsResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
-                //
+                SelectFilter::make('Category')
+                    ->relationship('categories', 'name'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -124,9 +128,11 @@ class ProductsResource extends Resource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                BulkAction::make('Delete')
+                    ->label('Xoa san pham')
+                    ->action(fn (Collection $records) => $records->each->delete())
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-trash'),
             ]);
     }
 

@@ -16,7 +16,16 @@ return new class extends Migration
             $table->foreignId('cart_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->integer('quantity');
+            $table->decimal('price', 10, 2); // Giá sản phẩm
+            $table->decimal('discount_price', 10, 2)->nullable(); // Giá giảm giá
+            $table->string('currency')->default('VND'); // Tiền tệ
+            $table->string('status')->default('active'); // Trạng thái sản phẩm trong giỏ hàng
+            $table->string('product_name'); // Tên sản phẩm
+            $table->string('product_sku')->nullable(); // SKU sản phẩm
+            $table->string('product_image')->nullable(); // Hình ảnh sản phẩm
+            $table->text('product_description')->nullable(); // Mô tả sản phẩm
             $table->timestamps();
+            $table->softDeletes(); // Hỗ trợ Soft Deletes
         });
     }
 
