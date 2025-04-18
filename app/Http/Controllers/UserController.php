@@ -11,20 +11,32 @@ class UserController extends Controller
 {
     public function updatePassword(Request $request, User $user)
     {
-        // Validate the request
+        $this->validatePassword($request);
+
+        $this->authorizePasswordUpdate($user);
+
+        $this->updateUserPassword($user, $request->password);
+
+        return response()->json(['message' => 'Mật khẩu đã được cập nhật thành công.']);
+    }
+
+    private function validatePassword(Request $request)
+    {
         $request->validate([
             'password' => 'required|string|min:8|confirmed',
         ]);
+    }
 
-        // Check if the authenticated user can update the password
-        if (!Auth::check() || (Auth::id() !== $user->id && Auth::user()->role !== 'admin' && Auth::user()->role !== 'super_admin')) {
-            abort(403, 'Unauthorized action.');
+    private function authorizePasswordUpdate(User $user)
+    {
+        if (!Auth::check() || (Auth::id() !== $user->id && !in_array(Auth::user()->role, ['admin', 'super_admin']))) {
+            abort(403, 'Hành động không được phép.');
         }
+    }
 
-        // Update the password
-        $user->password = Hash::make($request->password);
+    private function updateUserPassword(User $user, $password)
+    {
+        $user->password = Hash::make($password);
         $user->save();
-
-        return response()->json(['message' => 'Password updated successfully.']);
     }
 }

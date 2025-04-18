@@ -3,27 +3,23 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Models\Customers;
+use App\Models\Customer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Row;
-use Illuminate\Support\Str;
 
 class CustomerResource extends Resource
 {
-    protected static ?string $model = Customers::class;
+    protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
@@ -33,7 +29,7 @@ class CustomerResource extends Resource
             ->schema([
                 Section::make('Thông tin khách hàng')
                     ->schema([
-                        Grid::make()
+                        Grid::make(2)
                             ->schema([
                                 TextInput::make('full_name')
                                     ->label('Họ và tên')
@@ -49,15 +45,56 @@ class CustomerResource extends Resource
                                 TextInput::make('phone')
                                     ->label('Số điện thoại')
                                     ->maxlength(255),
+
                                 Textarea::make('address')
                                     ->label('Địa chỉ')
                                     ->rows(3)
-                                    ->maxlength(500)
+                                    ->maxlength(500),
+
+                                TextInput::make('loyalty_card_number')
+                                    ->label('Số thẻ thành viên'),
+
+                                TextInput::make('loyalty_points')
+                                    ->label('Điểm tích lũy')
+                                    ->numeric(),
+
+                                Select::make('membership_level')
+                                    ->label('Cấp độ thành viên')
+                                    ->options([
+                                        'bronze' => 'Bronze',
+                                        'silver' => 'Silver',
+                                        'gold' => 'Gold',
+                                        'platinum' => 'Platinum',
+                                    ]),
+
+                                DatePicker::make('date_of_birth')
+                                    ->label('Ngày sinh'),
+
+                                Select::make('gender')
+                                    ->label('Giới tính')
+                                    ->options([
+                                        'male' => 'Nam',
+                                        'female' => 'Nữ',
+                                        'other' => 'Khác',
+                                    ]),
+
+                                TextInput::make('referral_code')
+                                    ->label('Mã giới thiệu'),
+
+                                TextInput::make('preferred_contact_method')
+                                    ->label('Phương thức liên hệ ưu tiên'),
+
+                                TextInput::make('preferred_language')
+                                    ->label('Ngôn ngữ ưu tiên'),
+
+                                TextInput::make('preferred_currency')
+                                    ->label('Tiền tệ ưu tiên'),
+
+                                Textarea::make('notes')
+                                    ->label('Ghi chú')
+                                    ->rows(3),
                             ]),
                     ]),
-                DateTimePicker::make('created_at')
-                            ->label('Được tạo lúc')
-                            ->default(now())
             ]);
     }
 
@@ -72,43 +109,33 @@ class CustomerResource extends Resource
                     ->label('Email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
-                    ->label('Số điện thoại')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->label('Địa chỉ'),
+                    ->label('Số điện thoại'),
+                Tables\Columns\TextColumn::make('loyalty_points')
+                    ->label('Điểm tích lũy'),
+                Tables\Columns\TextColumn::make('membership_level')
+                    ->label('Cấp độ thành viên'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tạo lúc')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Chỉnh sửa gần nhất')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('created_today')
+                    ->label('Tạo hôm nay')
+                    ->query(fn(Builder $query) => $query->whereDate('created_at', now()->toDateString())),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

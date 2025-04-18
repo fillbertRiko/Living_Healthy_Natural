@@ -9,7 +9,15 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order_id', 'product_id', 'quantity', 'price'];
+    protected $fillable = [
+        'order_id',
+        'product_id',
+        'quantity',
+        'price',
+        'sku',
+        'product_name',
+        'product_image'
+    ];
 
     // Một sản phẩm thuộc về một đơn hàng
     public function order()

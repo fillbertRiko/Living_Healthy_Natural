@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoriesResource\Pages;
-use App\Filament\Resources\CategoriesResource\RelationManagers;
 use App\Models\Categories;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,13 +10,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
-use Illuminate\Support\Str;
 
 class CategoriesResource extends Resource
 {
@@ -37,22 +34,26 @@ class CategoriesResource extends Resource
                                     ->label('Tên Danh Mục Sản Phẩm')
                                     ->required()
                                     ->maxlength(255)
-                                    ->live()
-                                    ->afterStateUpdated(fn (string $operation, $state, $set) => 
-                                        $operation === 'create' ? $set('slug', Str::slug($state)) : null
-                                    ),
+                                    ->live(),
 
                                 TextInput::make('slug')
+                                    ->label('Slug')
                                     ->required()
                                     ->maxlength(255)
-                                    ->dehydrated()
-                                    ->unique(Categories::class, 'slug', ignoreRecord: true)
-                                    ->disabled(),
+                                    ->unique(Categories::class, 'slug', ignoreRecord: true),
 
                                 TextInput::make('description')
                                     ->label('Thông tin chi tiết danh mục')
                                     ->required()
-                                    ->maxlength(255)
+                                    ->maxlength(255),
+
+                                TextInput::make('meta_title')
+                                    ->label('Meta Title')
+                                    ->maxlength(255),
+
+                                TextInput::make('meta_description')
+                                    ->label('Meta Description')
+                                    ->maxlength(255),
                             ]),
                         FileUpload::make('image')
                             ->label('Hình Ảnh Sản Phẩm')
@@ -89,36 +90,31 @@ class CategoriesResource extends Resource
                     ->label('Tạo lúc')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Chỉnh sửa gần nhất')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                    
+                    ->toggleable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('active')
+                    ->label('Đang hoạt động')
+                    ->query(fn(Builder $query) => $query->where('active', true)),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

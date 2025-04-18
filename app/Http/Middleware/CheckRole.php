@@ -17,8 +17,10 @@ class CheckRole
      */
     public function handle($request, Closure $next, ...$roles)
     {
-        if (!Auth::check() || !in_array(Auth::user()->role, $roles)) {
-            abort(403, 'Bạn không có quyền truy cập.');
+        $user = Auth::user();
+
+        if (!$user || !in_array($user->role, $roles, true)) {
+            return abort(403, 'Bạn không có quyền truy cập.');
         }
 
         return $next($request);

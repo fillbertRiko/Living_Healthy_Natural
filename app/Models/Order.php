@@ -13,7 +13,23 @@ class Order extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['user_id', 'status', 'total', 'shipping_address', 'order_date', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'user_id',
+        'status',
+        'total',
+        'shipping_address',
+        'order_date',
+        'payment_method',
+        'tracking_number',
+        'shipping_method',
+        'shipping_cost',
+        'billing_address',
+        'coupon_code',
+        'discount',
+        'notes',
+        'created_at',
+        'updated_at'
+    ];
 
     // Một đơn hàng thuộc về một người dùng
     public function user()
@@ -26,6 +42,4 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-
-    
 }

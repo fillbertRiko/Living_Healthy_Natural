@@ -6,59 +6,107 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use App\Models\Categories; // Ensure the Category model exists in this namespace, or update the namespace accordingly.
 
 class Products extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'description', 'price', 'quantity', 'category_id', 'image'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'price',
+        'quantity',
+        'category_id',
+        'image',
+        'sku',
+        'barcode',
+        'brand',
+        'model',
+        'color',
+        'size',
+        'weight',
+        'dimensions',
+        'material',
+        'warranty',
+        'origin',
+        'tags',
+        'meta_title',
+        'meta_description',
+        'is_active',
+        'is_featured',
+        'is_on_sale',
+        'is_new',
+    ];
 
-    // Một sản phẩm thuộc về một danh mục
-    public function category()
+    protected $casts = [
+        'price' => 'float',
+        'quantity' => 'integer',
+        'is_active' => 'boolean',
+        'is_featured' => 'boolean',
+        'is_on_sale' => 'boolean',
+        'is_new' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'is_active' => true,
+        'is_featured' => false,
+        'is_on_sale' => false,
+        'is_new' => false,
+    ];
+
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+    protected $appends = ['image_url'];
+    protected $with = ['category'];
+    protected $table = 'products';
+    protected $primaryKey = 'id';
+
+    // Relationships
+    public function cartItems()
     {
-        return $this->belongsTo(Categories::class);
+        return $this->hasMany(CartItems::class);
     }
 
-    // Một sản phẩm có nhiều đánh giá
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    // Một sản phẩm có nhiều bình luận
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
-    // Một sản phẩm có thể xuất hiện trong nhiều đơn hàng
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    // Một sản phẩm có thể được lưu trữ ở nhiều kho
     public function warehouses()
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_stocks');
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsTo(Categories::class);
+        return $this->belongsTo(Categories::class, 'category_id');
     }
 
-    public static function boot()
+    // Boot method for model events
+    protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($product) {
-            if(!$product->slug)
-            {
-                $product->slug = Categories::find($product->category_id)?->slug ?? '';
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
             }
         });
+    }
+
+    // Accessor for image_url
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
     }
 }

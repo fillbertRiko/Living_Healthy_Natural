@@ -3,17 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\Modal\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
@@ -23,8 +18,6 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\Filter;
-
 
 class UserResource extends Resource
 {
@@ -49,18 +42,14 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\Select::make('role')
                     ->label('Vai trò')
-                    ->options([
-                        'super_admin' => 'Super Admin',
-                        'admin' => 'Admin',
-                        'user' => 'User',
-                    ])
-                    ->default('user') // Đặt giá trị mặc định là 'user'
+                    ->options(User::query()->distinct()->pluck('role', 'role')->toArray())
+                    ->default('user')
                     ->required(),
                 Forms\Components\TextInput::make('password')
                     ->label('Mật Khẩu')
                     ->password()
-                    ->required(fn ($livewire) => $livewire instanceof Pages\CreateUser)
-                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn($livewire) => $livewire instanceof Pages\CreateUser)
+                    ->dehydrated(fn($state) => filled($state))
                     ->placeholder('Nhập mật khẩu'),
                 Forms\Components\TextInput::make('phone')
                     ->label('Số Điện Thoại')
@@ -95,14 +84,14 @@ class UserResource extends Resource
                     ->label('Địa chỉ Email')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('role')
+                BadgeColumn::make('role')
                     ->label('Vai Trò')
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'super_admin' => 'Super Admin',
-                        'admin' => 'Admin',
-                        'user' => 'User',
-                        default => $state,
-                    })
+                    ->colors([
+                        'primary' => 'user',
+                        'success' => 'admin',
+                        'danger' => 'super_admin',
+                    ])
+                    ->formatStateUsing(fn($state) => ucfirst(str_replace('_', ' ', $state)))
                     ->sortable(),
                 TextColumn::make('phone')
                     ->label('Số Điện Thoại')
@@ -111,51 +100,39 @@ class UserResource extends Resource
                 TextColumn::make('address')
                     ->label('Địa Chỉ')
                     ->searchable()
-                    ->limit(50), // Giới hạn hiển thị 50 ký tự
+                    ->limit(50),
                 TextColumn::make('created_at')
                     ->label('Ngày Tạo')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->label('Ngày Cập Nhật')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('role')
                     ->label('Lọc theo vai trò')
-                    ->options([
-                        'super_admin' => 'Super Admin',
-                        'admin' => 'Admin',
-                        'user' => 'User',
-                    ]),
+                    ->options(User::query()->distinct()->pluck('role', 'role')->toArray()),
                 TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                EditAction::make(),
+                ViewAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()->label('Xóa hàng loạt')->requiresConfirmation(),
             ])
-            ->searchable()
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('Không có dữ liệu')
             ->emptyStateDescription('Hiện tại không có dữ liệu nào trong hệ thống.')
             ->emptyStateIcon('heroicon-o-database');
     }
 
-
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -169,12 +146,25 @@ class UserResource extends Resource
 
     public static function canAccess(): bool
     {
-        return Auth::user()?->role === 'super_admin';
+        $user = Auth::user();
+        return $user instanceof \App\Models\User && $user->isSuperAdmin();
     }
+
     public static function getNavigationItems(): array
     {
-        return Auth::user()?->role === 'super_admin'
-            ? parent::getNavigationItems()
-            : collect(parent::getNavigationItems())->reject(fn ($item) => in_array($item['label'], ['Quản lý hệ thống']));
+        $items = parent::getNavigationItems();
+        $user = Auth::user();
+        // Kiểm tra xem user có phải là super admin không
+        $isSuperAdmin = $user instanceof \App\Models\User && $user->isSuperAdmin();
+
+        // Nếu user là super admin, trả về tất cả navigation items
+        if ($isSuperAdmin) {
+            return $items;
+        }
+
+        // Nếu không, lọc bỏ các mục có nhãn 'Quản lý hệ thống'
+        return collect($items)
+            ->reject(fn($item) => in_array($item['label'], ['Quản lý hệ thống']))
+            ->all();
     }
 }

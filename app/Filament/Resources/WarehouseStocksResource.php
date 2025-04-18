@@ -3,18 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\WarehouseStocksResource\Pages;
-use App\Filament\Resources\WarehouseStocksResource\RelationManagers;
 use App\Models\WarehouseStock;
-use App\Models\Warehouse;
-use App\Models\Products;
-use App\Models\Order;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WarehouseStocksResource extends Resource
 {
@@ -22,7 +15,7 @@ class WarehouseStocksResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
-    public static function form(Form $form): Form
+    public static function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
@@ -31,12 +24,12 @@ class WarehouseStocksResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('warehouse_id')
                             ->label('Kho Hàng')
-                            ->relationship('warehouse', 'name') // Hiển thị tên kho
+                            ->relationship('warehouse', 'name')
                             ->searchable()
                             ->required(),
                         Forms\Components\Select::make('product_id')
                             ->label('Sản Phẩm')
-                            ->relationship('product', 'name') // Hiển thị tên sản phẩm
+                            ->relationship('product', 'name')
                             ->searchable()
                             ->required(),
                         Forms\Components\TextInput::make('quantity')
@@ -44,6 +37,14 @@ class WarehouseStocksResource extends Resource
                             ->numeric()
                             ->required()
                             ->minValue(1),
+                        Forms\Components\TextInput::make('cost_price')
+                            ->label('Giá Nhập')
+                            ->numeric()
+                            ->minValue(0),
+                        Forms\Components\TextInput::make('selling_price')
+                            ->label('Giá Bán')
+                            ->numeric()
+                            ->minValue(0),
                     ]),
                 Forms\Components\Section::make('Thời Gian')
                     ->columns(2)
@@ -59,7 +60,7 @@ class WarehouseStocksResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public static function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
@@ -71,6 +72,12 @@ class WarehouseStocksResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Số Lượng'),
+                Tables\Columns\TextColumn::make('cost_price')
+                    ->label('Giá Nhập')
+                    ->money('VND'),
+                Tables\Columns\TextColumn::make('selling_price')
+                    ->label('Giá Bán')
+                    ->money('VND'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Ngày Tạo')
                     ->dateTime(),
@@ -87,13 +94,13 @@ class WarehouseStocksResource extends Resource
                             ->relationship('warehouse', 'name')
                             ->searchable(),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
+                    ->query(
+                        fn(Builder $query, array $data): Builder =>
+                        $query->when(
                             $data['warehouse_id'] ?? null,
-                            fn (Builder $query, $warehouseId): Builder => $query->where('warehouse_id', $warehouseId)
-                        );
-                    }),
-
+                            fn(Builder $query, $warehouseId): Builder => $query->where('warehouse_id', $warehouseId)
+                        )
+                    ),
                 Tables\Filters\Filter::make('product')
                     ->label('Sản Phẩm')
                     ->form([
@@ -102,12 +109,14 @@ class WarehouseStocksResource extends Resource
                             ->relationship('product', 'name')
                             ->searchable(),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
+                    ->query(
+                        fn(Builder $query, array $data): Builder =>
+                        $query->when(
                             $data['product_id'] ?? null,
-                            fn (Builder $query, $productId): Builder => $query->where('product_id', $productId)
-                        );
-                    }),
+                            fn(Builder $query, $productId): Builder => $query->where('product_id', $productId)
+                        )
+                    ),
+                Tables\Filters\TrashedFilter::make(), // Add filter for soft-deleted records
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -119,16 +128,13 @@ class WarehouseStocksResource extends Resource
                     ->icon('heroicon-o-trash'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->label('Xóa Hàng Loạt')
-                        ->icon('heroicon-o-trash')
-                        ->requiresConfirmation()
-                        ->modalHeading('Xác Nhận Xóa')
-                        ->modalSubheading('Bạn có chắc chắn muốn xóa các mục đã chọn không?'),
-                ]),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->label('Xóa Hàng Loạt')
+                    ->icon('heroicon-o-trash')
+                    ->requiresConfirmation()
+                    ->modalHeading('Xác Nhận Xóa')
+                    ->modalSubheading('Bạn có chắc chắn muốn xóa các mục đã chọn không?'),
             ])
-            ->searchable()
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('Không có dữ liệu')
             ->emptyStateDescription('Hiện tại không có dữ liệu nào trong hệ thống.');
@@ -136,9 +142,7 @@ class WarehouseStocksResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
