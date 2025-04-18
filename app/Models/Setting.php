@@ -58,6 +58,16 @@ class Setting extends Model
         });
     }
 
+    public static function boot()
+    {
+        $settings = Cache::remember('settings.all', now()->addMinutes(10), function () {
+            return Setting::all()->pluck('value', 'key')->toArray();
+        });
+
+        // Sau đó, bạn có thể set vào config
+        config(['settings' => $settings]);
+    }
+
     /**
      * Cập nhật hoặc tạo mới setting.
      *

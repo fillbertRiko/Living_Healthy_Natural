@@ -117,9 +117,21 @@ class UserResource extends Resource
                 TrashedFilter::make(),
             ])
             ->actions([
-                EditAction::make(),
-                ViewAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->label('Chỉnh sửa')
+                    ->icon('heroicon-o-pencil')
+                    ->color('primary')
+                    ->grouped(),
+                ViewAction::make()
+                    ->label('Xem')
+                    ->icon('heroicon-o-eye')
+                    ->color('secondary')
+                    ->grouped(),
+                DeleteAction::make()
+                    ->label('Xóa')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->grouped(),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()->label('Xóa hàng loạt')->requiresConfirmation(),
