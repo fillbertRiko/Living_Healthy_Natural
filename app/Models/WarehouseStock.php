@@ -42,6 +42,6 @@ class WarehouseStock extends Model
      */
     public function product()
     {
-        return $this->belongsTo(Products::class); // Fixed class name to singular for consistency
+        return $this->belongsTo(Product::class); // Fixed class name to singular for consistency
     }
 }

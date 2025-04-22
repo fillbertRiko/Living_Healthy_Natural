@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Payments;
+use App\Models\Payment;
 use App\Models\Order;
 use Faker\Factory as Faker;
 
@@ -26,7 +26,7 @@ class PaymentSeeder extends Seeder
 
         // Tạo 50 bản ghi mẫu cho bảng payments
         for ($i = 0; $i < 50; $i++) {
-            Payments::create([
+            Payment::create([
                 // Chọn ngẫu nhiên một order_id từ danh sách
                 'order_id'       => $faker->randomElement($orderIds),
                 // Ngày thanh toán nằm trong khoảng 1 năm gần đây

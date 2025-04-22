@@ -11,7 +11,7 @@ abstract class Controller
     /**
      * Common functionality for all controllers can be added here.
      */
-    protected function jsonResponse($data, $status = 200)
+    protected function jsonResponse($data, $status = 200): \Illuminate\Http\JsonResponse
     {
         return response()->json($data, $status);
     }

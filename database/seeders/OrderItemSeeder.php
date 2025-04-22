@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\OrderItem;
 use App\Models\Order;
-use App\Models\Products;
+use App\Models\Product;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
@@ -21,7 +21,7 @@ class OrderItemSeeder extends Seeder
         $orderIds = Order::pluck('id')->toArray();
 
         // Lấy tất cả sản phẩm từ bảng products (đảm bảo đã có dữ liệu)
-        $products = Products::all();
+        $products = Product::all();
 
         // Kiểm tra xem có dữ liệu đủ để seed không
         if (empty($orderIds) || $products->isEmpty()) {

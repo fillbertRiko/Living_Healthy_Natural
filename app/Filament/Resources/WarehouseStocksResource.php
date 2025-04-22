@@ -60,6 +60,9 @@ class WarehouseStocksResource extends Resource
             ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table

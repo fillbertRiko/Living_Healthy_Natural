@@ -66,7 +66,7 @@ class Session extends Model
     /**
      * Get the user that owns the session.
      */
-    public function user()
+    public function user() :object
     {
         return $this->belongsTo(User::class);
     }

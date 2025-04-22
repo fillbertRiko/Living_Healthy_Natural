@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Categories extends Model
+class Category extends Model
 {
     use HasFactory;
 
@@ -21,7 +21,7 @@ class Categories extends Model
     // Một danh mục có nhiều sản phẩm
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Product::class);
     }
 
     public static function boot()
@@ -34,5 +34,7 @@ class Categories extends Model
         static::updating(function ($model) {
             $model->slug = Str::slug($model->name);
         });
+
     }
+
 }

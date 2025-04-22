@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SettingsResource\Pages;
-use App\Models\Setting;
+use App\Models\Settings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SettingsResource extends Resource
 {
-    protected static ?string $model = Setting::class;
+    protected static ?string $model = Settings::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

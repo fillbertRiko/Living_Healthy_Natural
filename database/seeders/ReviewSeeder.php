@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Review;
 use App\Models\User;
-use App\Models\Products;
+use App\Models\Product;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
@@ -19,7 +19,7 @@ class ReviewSeeder extends Seeder
 
         // Lấy danh sách id của người dùng và sản phẩm để đảm bảo khóa ngoại hợp lệ
         $userIds = User::pluck('id')->toArray();
-        $productIds = Products::pluck('id')->toArray();
+        $productIds = Product::pluck('id')->toArray();
 
         // Nếu chưa có dữ liệu của Users hoặc Products, thông báo và dừng seeder
         if (empty($userIds) || empty($productIds)) {

@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentResource\Pages;
-use App\Models\Payments;
+use App\Models\Payment;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,7 +12,7 @@ use Filament\Tables\Table;
 
 class PaymentResource extends Resource
 {
-    protected static ?string $model = Payments::class;
+    protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
@@ -32,11 +32,11 @@ class PaymentResource extends Resource
                     ->numeric()
                     ->label('Amount'),
                 Forms\Components\Select::make('payment_method')
-                    ->options(array_combine(Payments::PAYMENT_METHODS, Payments::PAYMENT_METHODS))
+                    ->options(array_combine(Payment::PAYMENT_METHODS, Payment::PAYMENT_METHODS))
                     ->required()
                     ->label('Payment Method'),
                 Forms\Components\Select::make('status')
-                    ->options(array_combine(Payments::STATUSES, Payments::STATUSES))
+                    ->options(array_combine(Payment::STATUSES, Payment::STATUSES))
                     ->required()
                     ->label('Status'),
                 Forms\Components\TextInput::make('transaction_id')
@@ -64,10 +64,10 @@ class PaymentResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payment_method')
-                    ->options(array_combine(Payments::PAYMENT_METHODS, Payments::PAYMENT_METHODS))
+                    ->options(array_combine(Payment::PAYMENT_METHODS, Payment::PAYMENT_METHODS))
                     ->label('Payment Method'),
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(array_combine(Payments::STATUSES, Payments::STATUSES))
+                    ->options(array_combine(Payment::STATUSES, Payment::STATUSES))
                     ->label('Status'),
             ])
             ->actions([

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Products;
-use App\Models\Categories;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 
@@ -18,14 +18,14 @@ class ProductSeeder extends Seeder
         $faker = Faker::create();
 
         // Lấy tất cả các category id để đảm bảo khóa ngoại hợp lệ
-        $categoryIds = Categories::pluck('id')->toArray();
+        $categoryIds = Category::pluck('id')->toArray();
 
         // Tạo 50 sản phẩm mẫu
         for ($i = 0; $i < 50; $i++) {
             // Sinh tên sản phẩm
             $name = $faker->words(3, true);
 
-            Products::create([
+            Product::create([
                 'name'              => $name,
                 // Thêm một số ngẫu nhiên vào slug để đảm bảo tính duy nhất
                 'slug'              => Str::slug($name) . '-' . $faker->unique()->numberBetween(1, 10000),

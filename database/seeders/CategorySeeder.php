@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Categories;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 
@@ -21,7 +21,7 @@ class CategorySeeder extends Seeder
             // Tạo một tên danh mục ngẫu nhiên và đảm bảo tính duy nhất
             $name = ucfirst($faker->unique()->word);
 
-            Categories::create([
+            Category::create([
                 'name'              => $name,
                 'slug'              => Str::slug($name),
                 'description'       => $faker->sentence(10),

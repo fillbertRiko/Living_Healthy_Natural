@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
-class VerifyCsrfToken extends Middleware
+class VeryfyCsrfToken extends Middleware
 {
     protected $except = [
         'api/*', // Exclude all API routes

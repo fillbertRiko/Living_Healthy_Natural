@@ -22,7 +22,16 @@ class Logs extends Model
     ];
 
     // Quan hệ với model User
-    public function user()
+    public static function create(array $array)
+    {
+    }
+
+    public static function latest()
+    {
+        return Logs::latest()->first();
+    }
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

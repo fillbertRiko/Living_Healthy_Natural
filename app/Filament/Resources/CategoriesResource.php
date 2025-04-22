@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoriesResource\Pages;
-use App\Models\Categories;
+use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,7 +18,7 @@ use Filament\Forms\Components\Toggle;
 
 class CategoriesResource extends Resource
 {
-    protected static ?string $model = Categories::class;
+    protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
 
@@ -40,7 +40,7 @@ class CategoriesResource extends Resource
                                     ->label('Slug')
                                     ->required()
                                     ->maxlength(255)
-                                    ->unique(Categories::class, 'slug', ignoreRecord: true),
+                                    ->unique(Category::class, 'slug', ignoreRecord: true),
 
                                 TextInput::make('description')
                                     ->label('Thông tin chi tiết danh mục')
