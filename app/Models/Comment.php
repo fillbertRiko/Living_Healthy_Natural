@@ -94,7 +94,7 @@ class Comment extends Model
     public function product(): BelongsTo
     {
         // Lưu ý: Nếu tên model cho sản phẩm là "Product", nên đổi lại cho phù hợp.
-        return $this->belongsTo(Products::class);
+        return $this->belongsTo(Product::class);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Cart;
+use App\Models\Settings;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,10 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $seeders = [
-            //UserSeeder::class,
+        $seeders = array(
+            UserSeeder::class,
             CustomerSeeder::class,
-            //SettingSeeder::class,
+            //SettingsSeeder::class,
             //CategorySeeder::class,
             //ProductSeeder::class,
             // WarehouseSeeder::class,
@@ -29,7 +30,7 @@ class DatabaseSeeder extends Seeder
             // PaymentSeeder::class,
             // ReviewSeeder::class,
             // CommentSeeder::class,
-        ];
+        );
 
         foreach ($seeders as $seeder) {
             $this->call($seeder);

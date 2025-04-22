@@ -40,7 +40,7 @@ class Review extends Model
     // Một đánh giá thuộc về một sản phẩm
     public function product()
     {
-        return $this->belongsTo(Products::class);
+        return $this->belongsTo(Product::class);
     }
 
     // Người phản hồi đánh giá

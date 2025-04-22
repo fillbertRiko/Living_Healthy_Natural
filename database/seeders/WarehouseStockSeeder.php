@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\WarehouseStock;
-use App\Models\Products;
+use App\Models\Product;
 use App\Models\Warehouse;
 use Faker\Factory as Faker;
 
@@ -18,7 +18,7 @@ class WarehouseStockSeeder extends Seeder
         $faker = Faker::create();
 
         // Lấy danh sách product và warehouse để đảm bảo khóa ngoại hợp lệ
-        $productIds   = Products::pluck('id')->toArray();
+        $productIds   = Product::pluck('id')->toArray();
         $warehouseIds = Warehouse::pluck('id')->toArray();
 
         if (empty($productIds) || empty($warehouseIds)) {

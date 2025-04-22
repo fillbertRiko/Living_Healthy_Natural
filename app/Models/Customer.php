@@ -42,4 +42,7 @@ class Customer extends Model
         'profile_picture',
         'social_media_links',
     ];
+
+
+
 }

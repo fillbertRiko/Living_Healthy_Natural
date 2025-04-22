@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\OrderItem;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
@@ -32,13 +34,13 @@ class Order extends Model
     ];
 
     // Một đơn hàng thuộc về một người dùng
-    public function user()
+    public function user() : object
     {
         return $this->belongsTo(User::class);
     }
 
     // Một đơn hàng có nhiều sản phẩm
-    public function orderItems()
+    public function orderItems() : object
     {
         return $this->hasMany(OrderItem::class);
     }

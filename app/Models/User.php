@@ -9,12 +9,17 @@ use App\Models\Logs;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
     // Các thuộc tính có thể gán hàng loạt
+    /**
+     * @var mixed|string
+     */
+
     protected $fillable = [
         'name',
         'email',
@@ -36,10 +41,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function setPasswordAttribute($value): void
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
     /**
      * Quan hệ: Một User có nhiều đơn hàng
      */
-    public function orders()
+    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class);
     }
@@ -47,17 +57,17 @@ class User extends Authenticatable
     /**
      * Kiểm tra vai trò
      */
-    public function isSuperAdmin()
+    public function isSuperAdmin(): bool
     {
         return $this->role === 'super_admin';
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    public function isUser()
+    public function isUser(): bool
     {
         return $this->role === 'user';
     }
@@ -65,7 +75,7 @@ class User extends Authenticatable
     /**
      * Phương thức boot để xử lý các sự kiện của model
      */
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 

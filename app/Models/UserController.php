@@ -6,6 +6,9 @@ use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Foundation\Application;
+use Illuminate\Contracts\View\View;
 
 class UserController extends Controller
 {
@@ -19,7 +22,7 @@ class UserController extends Controller
         });
     }
 
-    public function showLogs()
+    public function showLogs(): object
     {
         $logs = Logs::latest()->paginate(20);
         return view('logs.index', compact('logs'));

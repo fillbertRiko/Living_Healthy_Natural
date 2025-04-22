@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Setting;
+use App\Models\Settings;
 
-class SettingSeeder extends Seeder
+class SettingsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -141,7 +141,7 @@ class SettingSeeder extends Seeder
         ];
 
         foreach ($defaultSettings as $settingData) {
-            Setting::create($settingData);
+            Settings::create($settingData);
         }
     }
 }

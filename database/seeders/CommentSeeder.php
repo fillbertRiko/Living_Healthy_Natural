@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Comment;
 use App\Models\User;
-use App\Models\Products;
+use App\Models\Product;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
@@ -19,7 +19,7 @@ class CommentSeeder extends Seeder
 
         // Lấy danh sách các khóa ngoại cần thiết
         $userIds    = User::pluck('id')->toArray();
-        $productIds = Products::pluck('id')->toArray();
+        $productIds = Product::pluck('id')->toArray();
 
         if (empty($userIds) || empty($productIds)) {
             $this->command->info('Vui lòng seed bảng users và products trước khi seed comments.');

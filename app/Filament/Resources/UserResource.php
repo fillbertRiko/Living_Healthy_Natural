@@ -48,7 +48,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->label('Mật Khẩu')
                     ->password()
-                    ->required(fn($livewire) => $livewire instanceof Pages\CreateUser)
+                    ->required(fn($liveware) => $liveware instanceof Pages\CreateUser)
                     ->dehydrated(fn($state) => filled($state))
                     ->placeholder('Nhập mật khẩu'),
                 Forms\Components\TextInput::make('phone')

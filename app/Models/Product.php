@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class Products extends Model
+class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -89,7 +89,7 @@ class Products extends Model
 
     public function category()
     {
-        return $this->belongsTo(Categories::class, 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     // Boot method for model events
